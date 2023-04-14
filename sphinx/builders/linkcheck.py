@@ -9,6 +9,7 @@ import time
 from copy import deepcopy
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
+from http.client import HTTPConnection
 from html.parser import HTMLParser
 from os import path
 from queue import PriorityQueue, Queue
@@ -31,6 +32,7 @@ from sphinx.util.console import darkgray, darkgreen, purple, red, turquoise  # t
 from sphinx.util.nodes import get_node_line
 
 logger = logging.getLogger(__name__)
+HTTPConnection.debuglevel = 1
 
 uri_re = re.compile('([a-z]+:)?//')  # matches to foo:// and // (a protocol relative URL)
 
