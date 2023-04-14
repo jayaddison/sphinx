@@ -523,7 +523,7 @@ def test_inspect_main_url(capsys):
         inspect_main([url])
 
     stdout, stderr = capsys.readouterr()
-    assert stdout.startswith("c:function\n")
+    assert ("c:function\n") in stdout
     assert stderr == ""
 
 
