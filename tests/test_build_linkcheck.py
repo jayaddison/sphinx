@@ -217,8 +217,8 @@ def capture_headers_handler(records):
 
         def do_GET(self):
             self.send_response(200, "OK")
-            self.end_headers()
             records.append(self.headers.as_string())
+            self.end_headers()
     return HeadersDumperHandler
 
 
