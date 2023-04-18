@@ -31,7 +31,7 @@ class DefaultsHandler(http.server.BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
     def do_HEAD(self):
-        if self.path[1:].rstrip() == "":
+        if self.path[1:].rstrip() == "":  # noqa: SIM114
             self.send_response(200, "OK")
             self.end_headers()
         elif self.path[1:].rstrip() == "anchor.html":

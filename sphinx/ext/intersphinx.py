@@ -275,7 +275,7 @@ def load_mappings(app: Sphinx) -> None:
             for name, (uri, invs) in app.config.intersphinx_mapping.values():
                 futures.append(pool.submit(
                     fetch_inventory_group, name, uri, invs, intersphinx_cache, app, now,
-                    session
+                    session,
                 ))
             updated = [f.result() for f in concurrent.futures.as_completed(futures)]
 
