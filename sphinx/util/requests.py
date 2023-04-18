@@ -60,35 +60,33 @@ def _get_user_agent(config: Config) -> str:
         ])
 
 
-class Session(requests.Session):
+def get(url: str, **kwargs: Any) -> requests.Response:
+    """Sends a GET request like requests.get().
 
-    def get(self, url: str, **kwargs: Any) -> requests.Response:
-        """Sends a GET request like requests.get().
+    This sets up User-Agent header and TLS verification automatically."""
+    headers = kwargs.setdefault('headers', {})
+    config = kwargs.pop('config', None)
+    if config:
+        kwargs.setdefault('verify', _get_tls_cacert(url, config))
+        headers.setdefault('User-Agent', _get_user_agent(config))
+    else:
+        headers.setdefault('User-Agent', useragent_header[0][1])
 
-        This sets up User-Agent header and TLS verification automatically."""
-        headers = kwargs.setdefault('headers', {})
-        config = kwargs.pop('config', None)
-        if config:
-            kwargs.setdefault('verify', _get_tls_cacert(url, config))
-            headers.setdefault('User-Agent', _get_user_agent(config))
-        else:
-            headers.setdefault('User-Agent', useragent_header[0][1])
-
-        with ignore_insecure_warning(**kwargs):
-            return super().get(url, **kwargs)
+    with ignore_insecure_warning(**kwargs):
+        return requests.get(url, **kwargs)
 
 
-    def head(self, url: str, **kwargs: Any) -> requests.Response:
-        """Sends a HEAD request like requests.head().
+def head(url: str, **kwargs: Any) -> requests.Response:
+    """Sends a HEAD request like requests.head().
 
-        This sets up User-Agent header and TLS verification automatically."""
-        headers = kwargs.setdefault('headers', {})
-        config = kwargs.pop('config', None)
-        if config:
-            kwargs.setdefault('verify', _get_tls_cacert(url, config))
-            headers.setdefault('User-Agent', _get_user_agent(config))
-        else:
-            headers.setdefault('User-Agent', useragent_header[0][1])
+    This sets up User-Agent header and TLS verification automatically."""
+    headers = kwargs.setdefault('headers', {})
+    config = kwargs.pop('config', None)
+    if config:
+        kwargs.setdefault('verify', _get_tls_cacert(url, config))
+        headers.setdefault('User-Agent', _get_user_agent(config))
+    else:
+        headers.setdefault('User-Agent', useragent_header[0][1])
 
-        with ignore_insecure_warning(**kwargs):
-            return super().head(url, **kwargs)
+    with ignore_insecure_warning(**kwargs):
+        return requests.head(url, **kwargs)
