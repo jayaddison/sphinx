@@ -77,7 +77,6 @@ class Session(requests.Session):
         with ignore_insecure_warning(**kwargs):
             return super().get(url, **kwargs)
 
-
     def head(self, url: str, **kwargs: Any) -> requests.Response:
         """Sends a HEAD request like requests.head().
 
