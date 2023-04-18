@@ -95,7 +95,6 @@ class ConnectionMeasurement:
 
 @pytest.mark.sphinx('linkcheck', testroot='linkcheck', freshenv=True)
 def test_defaults(app):
-
     with http_server(DefaultsHandler):
         with ConnectionMeasurement() as m:
             app.build()
