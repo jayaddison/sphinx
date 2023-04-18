@@ -14,8 +14,8 @@ from os import path
 from queue import Queue
 from unittest import mock
 
-from urllib3.poolmanager import PoolManager
 import pytest
+from urllib3.poolmanager import PoolManager
 
 from sphinx.builders.linkcheck import HyperlinkAvailabilityCheckWorker, RateLimit
 from sphinx.testing.util import strip_escseq
