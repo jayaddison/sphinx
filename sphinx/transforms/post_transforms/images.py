@@ -43,10 +43,6 @@ class BaseImageConverter(SphinxTransform):
 class ImageDownloader(BaseImageConverter):
     default_priority = 100
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.session = requests.Session()
-
     def match(self, node: nodes.image) -> bool:
         if self.app.builder.supported_image_types == []:
             return False
@@ -76,7 +72,7 @@ class ImageDownloader(BaseImageConverter):
                 timestamp: float = ceil(os.stat(path).st_mtime)
                 headers['If-Modified-Since'] = epoch_to_rfc1123(timestamp)
 
-            r = self.session.get(node['uri'], headers=headers)
+            r = requests.get(node['uri'], headers=headers)
             if r.status_code >= 400:
                 logger.warning(__('Could not fetch remote image: %s [%d]') %
                                (node['uri'], r.status_code))
