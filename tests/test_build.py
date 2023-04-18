@@ -46,7 +46,7 @@ nonascii file name page
     "buildername",
     ['dirhtml', 'singlehtml', 'text', 'xml', 'pseudoxml', 'linkcheck'],
 )
-@mock.patch('sphinx.builders.linkcheck.requests.head',
+@mock.patch('sphinx.builders.linkcheck.requests.Session.head',
             side_effect=request_session_head)
 @pytest.mark.xfail(sys.platform == 'win32', reason="Not working on windows")
 def test_build_all(requests_head, make_app, nonascii_srcdir, buildername):
