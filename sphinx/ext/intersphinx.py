@@ -118,11 +118,7 @@ def _strip_basic_auth(url: str) -> str:
     return urlunsplit(frags)
 
 
-def _read_from_url(
-    url: str,
-    config: Config | None = None,
-    session: requests.Session | None = None,
-) -> IO:
+def _read_from_url(url: str, config: Config | None = None) -> IO:
     """Reads data from *url* with an HTTP *GET*.
 
     This function supports fetching from resources which use basic HTTP auth as
@@ -138,8 +134,7 @@ def _read_from_url(
     :return: data read from resource described by *url*
     :rtype: ``file``-like object
     """
-    session = session or requests.Session()
-    r = session.get(url, stream=True, config=config, timeout=config.intersphinx_timeout)
+    r = requests.get(url, stream=True, config=config, timeout=config.intersphinx_timeout)
     r.raise_for_status()
     r.raw.url = r.url
     # decode content-body based on the header.
@@ -173,12 +168,7 @@ def _get_safe_url(url: str) -> str:
         return urlunsplit(frags)
 
 
-def fetch_inventory(
-    app: Sphinx,
-    uri: str,
-    inv: str,
-    session: requests.Session | None = None,
-) -> Inventory:
+def fetch_inventory(app: Sphinx, uri: str, inv: str) -> Inventory:
     """Fetch, parse and return an intersphinx inventory file."""
     # both *uri* (base URI of the links to generate) and *inv* (actual
     # location of the inventory file) can be local or remote URIs
@@ -188,7 +178,7 @@ def fetch_inventory(
         uri = _strip_basic_auth(uri)
     try:
         if '://' in inv:
-            f = _read_from_url(inv, config=app.config, session=session)
+            f = _read_from_url(inv, config=app.config)
         else:
             f = open(path.join(app.srcdir, inv), 'rb')
     except Exception as err:
@@ -224,7 +214,6 @@ def fetch_inventory_group(
     cache: dict[str, InventoryCacheEntry],
     app: Sphinx,
     now: int,
-    session: requests.Session | None = None,
 ) -> bool:
     cache_time = now - app.config.intersphinx_cache_limit * 86400
     failures = []
@@ -238,7 +227,7 @@ def fetch_inventory_group(
                 safe_inv_url = _get_safe_url(inv)
                 logger.info(__('loading intersphinx inventory from %s...'), safe_inv_url)
                 try:
-                    invdata = fetch_inventory(app, uri, inv, session)
+                    invdata = fetch_inventory(app, uri, inv)
                 except Exception as err:
                     failures.append(err.args)
                     continue
@@ -267,17 +256,15 @@ def load_mappings(app: Sphinx) -> None:
     intersphinx_cache: dict[str, InventoryCacheEntry] = inventories.cache
 
     with concurrent.futures.ThreadPoolExecutor() as pool:
-        with requests.Session() as session:
-            futures = []
-            name: str | None
-            uri: str
-            invs: tuple[str | None, ...]
-            for name, (uri, invs) in app.config.intersphinx_mapping.values():
-                futures.append(pool.submit(
-                    fetch_inventory_group, name, uri, invs, intersphinx_cache, app, now,
-                    session,
-                ))
-            updated = [f.result() for f in concurrent.futures.as_completed(futures)]
+        futures = []
+        name: str | None
+        uri: str
+        invs: tuple[str | None, ...]
+        for name, (uri, invs) in app.config.intersphinx_mapping.values():
+            futures.append(pool.submit(
+                fetch_inventory_group, name, uri, invs, intersphinx_cache, app, now,
+            ))
+        updated = [f.result() for f in concurrent.futures.as_completed(futures)]
 
     if any(updated):
         inventories.clear()
