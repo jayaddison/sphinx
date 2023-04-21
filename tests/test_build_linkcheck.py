@@ -33,12 +33,15 @@ class DefaultsHandler(http.server.BaseHTTPRequestHandler):
     def do_HEAD(self):
         if self.path[1:].rstrip() == "":  # noqa: SIM114
             self.send_response(200, "OK")
+            self.send_header("Content-Length", "0")
             self.end_headers()
         elif self.path[1:].rstrip() == "anchor.html":
             self.send_response(200, "OK")
+            self.send_header("Content-Length", "0")
             self.end_headers()
         else:
             self.send_response(404, "Not Found")
+            self.send_header("Content-Length", "0")
             self.end_headers()
 
     def do_GET(self):
@@ -57,6 +60,7 @@ class DefaultsHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(content)
         else:
             self.send_response(404, "Not Found")
+            self.send_header("Content-Length", "0")
             self.end_headers()
 
 
@@ -254,6 +258,7 @@ def capture_headers_handler(records):
         def do_GET(self):
             records.append(self.headers.as_string())
             self.send_response(200, "OK")
+            self.send_header("Content-Length", "0")
             self.end_headers()
     return HeadersDumperHandler
 
@@ -356,6 +361,7 @@ def make_redirect_handler(*, support_head):
         def do_GET(self):
             if self.path == "/?redirected=1":
                 self.send_response(204, "No content")
+                self.send_header("Content-Length", "0")
             else:
                 self.send_response(302, "Found")
                 self.send_header("Location", "http://localhost:7777/?redirected=1")
@@ -441,6 +447,7 @@ class OKHandler(http.server.BaseHTTPRequestHandler):
 
     def do_HEAD(self):
         self.send_response(200, "OK")
+        self.send_header("Content-Length", "0")
         self.end_headers()
 
     def do_GET(self):
@@ -557,6 +564,7 @@ class InfiniteRedirectOnHeadHandler(http.server.BaseHTTPRequestHandler):
     def do_HEAD(self):
         self.send_response(302, "Found")
         self.send_header("Location", "http://localhost:7777/")
+        self.send_header("Content-Length", "0")
         self.end_headers()
 
     def do_GET(self):
@@ -597,6 +605,7 @@ def make_retry_after_handler(responses):
             self.send_response(status)
             if retry_after:
                 self.send_header('Retry-After', retry_after)
+            self.send_header("Content-Length", "0")
             self.end_headers()
 
         def log_date_time_string(self):
@@ -750,6 +759,7 @@ class ConnectionResetHandler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
         self.send_response(200, "OK")
+        self.send_header("Content-Length", "0")
         self.end_headers()
 
 
