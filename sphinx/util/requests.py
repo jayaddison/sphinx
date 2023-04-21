@@ -92,7 +92,7 @@ def head(url: str, **kwargs: Any) -> requests.Response:
         return requests.head(url, **kwargs)
 
 
-class Session(requests.Session):
+class _Session(requests.Session):
 
     def get(self, url: str, **kwargs: Any) -> requests.Response:  # type: ignore
         """Sends a GET request like requests.get().

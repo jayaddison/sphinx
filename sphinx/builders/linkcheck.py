@@ -262,7 +262,7 @@ class HyperlinkAvailabilityCheckWorker(Thread):
                                   for doc in self.config.linkcheck_exclude_documents]
         self.auth = [(re.compile(pattern), auth_info) for pattern, auth_info
                      in self.config.linkcheck_auth]
-        self._session = requests.Session()
+        self._session = requests._Session()
 
         super().__init__(daemon=True)
 
