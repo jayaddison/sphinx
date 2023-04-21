@@ -568,10 +568,10 @@ class InfiniteRedirectOnHeadHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        self.send_response(200, "OK")
-        self.end_headers()
         content = b"ok\n"
+        self.send_response(200, "OK")
         self.send_header("Content-Length", str(len(content)))
+        self.end_headers()
         self.wfile.write(content)
 
 
