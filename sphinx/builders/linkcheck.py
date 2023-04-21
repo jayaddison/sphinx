@@ -328,7 +328,7 @@ class HyperlinkAvailabilityCheckWorker(Thread):
                     try:
                         # try a HEAD request first, which should be easier on
                         # the server and the network
-                        with self._session.head(req_url, stream=True, allow_redirects=True,
+                        with self._session.head(req_url, allow_redirects=True,
                                                 config=self.config, auth=auth_info,
                                                 **kwargs) as response:
                             response.raise_for_status()
