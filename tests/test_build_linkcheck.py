@@ -350,7 +350,6 @@ def make_redirect_handler(*, support_head):
                 self.do_GET()
             else:
                 self.send_response(405, "Method Not Allowed")
-                self.send_header("Content-Length", "0")
                 self.end_headers()
 
         def do_GET(self):
