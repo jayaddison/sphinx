@@ -425,6 +425,7 @@ class HyperlinkAvailabilityCheckWorker(Thread):
             check_request = self.wqueue.get()
             next_check, hyperlink = check_request
             if hyperlink is None:
+                # An empty hyperlink is a signal to shutdown the worker; cleanup resources here
                 self._session.close()
                 break
 
