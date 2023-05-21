@@ -482,6 +482,15 @@ class BuildEnvironment:
                 # check the mtime of the document
                 mtime = self.all_docs[docname]
                 newmtime = path.getmtime(self.doc2path(docname))
+
+                print()
+                print("===================")
+                print(f"docname:  {docname}")
+                print("===================")
+                print(f"mtime:    {mtime}")
+                print(f"newmtime: {newmtime}")
+                print(f"changed?  {newmtime > mtime}")
+
                 if newmtime > mtime:
                     logger.debug('[build target] outdated %r: %s -> %s',
                                  docname,
@@ -498,6 +507,15 @@ class BuildEnvironment:
                             changed.add(docname)
                             break
                         depmtime = path.getmtime(deppath)
+
+                        print()
+                        print("-------------------")
+                        print(f"deppath:  {deppath}")
+                        print("-------------------")
+                        print(f"mtime:    {mtime}")
+                        print(f"depmtime: {depmtime}")
+                        print(f"changed?  {depmtime > mtime}")
+
                         if depmtime > mtime:
                             changed.add(docname)
                             break
