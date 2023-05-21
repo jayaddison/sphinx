@@ -494,8 +494,8 @@ class BuildEnvironment:
                 if newmtime > mtime:
                     logger.debug('[build target] outdated %r: %s -> %s',
                                  docname,
-                                 datetime.utcfromtimestamp(mtime),
-                                 datetime.utcfromtimestamp(newmtime))
+                                 datetime.utcfromtimestamp(mtime / 1_000_000_000),
+                                 datetime.utcfromtimestamp(newmtime / 1_000_000_000))
                     changed.add(docname)
                     continue
                 # finally, check the mtime of dependencies
