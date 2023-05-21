@@ -8,7 +8,7 @@ import pickle
 from collections import defaultdict
 from copy import copy
 from datetime import datetime
-from os import path
+from os import path, stat
 from typing import TYPE_CHECKING, Any, Callable, Generator, Iterator
 
 from docutils import nodes
@@ -481,7 +481,7 @@ class BuildEnvironment:
                     continue
                 # check the mtime of the document
                 mtime = self.all_docs[docname]
-                newmtime = path.getmtime(self.doc2path(docname))
+                newmtime = stat(self.doc2path(docname)).st_mtime_ns
 
                 print()
                 print("===================")
@@ -506,7 +506,7 @@ class BuildEnvironment:
                         if not path.isfile(deppath):
                             changed.add(docname)
                             break
-                        depmtime = path.getmtime(deppath)
+                        depmtime = stat(deppath).st_mtime_ns
 
                         print()
                         print("-------------------")
