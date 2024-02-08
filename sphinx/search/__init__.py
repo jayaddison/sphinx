@@ -501,6 +501,18 @@ class IndexBuilder:
                 word_store.words.extend(keywords)
             elif isinstance(node, nodes.Text):
                 word_store.words.extend(split(node.astext()))
+            elif isinstance(node, nodes.literal_block):
+                ids = node.parent['ids']
+                if not ids:
+                    return
+                caption = next(node.parent.findall(nodes.caption), None)
+                if not caption:
+                    return
+                if not node.parent['names']:
+                    return
+                title = caption.astext()
+                word_store.titles.append((title, ids[0] if ids else None))
+                word_store.title_words.extend(split(title))
             elif isinstance(node, nodes.title):
                 title = node.astext()
                 ids = node.parent['ids'] or node.parent.parent['ids']

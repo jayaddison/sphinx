@@ -35,3 +35,14 @@ International
 .. raw:: latex
 
    latex_keyword
+
+.. code-block:: python
+   :caption: some python code
+   :name: some-py
+
+   print('Hello, world!')
+
+.. code-block:: javascript
+   :caption: some javascript code
+
+   console.log('Hello, world!')

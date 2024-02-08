@@ -301,6 +301,9 @@ def test_nosearch(app):
     assert "table-of-contents" in index['alltitles']
     assert [0, "index-toc"] in index['alltitles']["table-of-contents"]
     assert "nosearch-table-of-contents" not in index['alltitles']
+    # code-block captioning
+    assert "some python code" in index['alltitles']
+    assert "some javascript code" not in index['alltitles']
 
 
 @pytest.mark.sphinx(testroot='search', parallel=3, freshenv=True)
