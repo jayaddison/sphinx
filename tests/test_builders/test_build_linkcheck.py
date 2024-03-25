@@ -120,7 +120,7 @@ def test_defaults(app: SphinxTestApp) -> None:
     with serve_application(app, DefaultsHandler) as address:
         with ConnectionMeasurement() as m:
             app.build()
-        assert m.connection_count <= 5
+        assert m.connection_count <= 3
 
     # Text output
     assert (app.outdir / 'output.txt').exists()
