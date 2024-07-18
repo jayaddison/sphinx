@@ -5,8 +5,6 @@ from __future__ import annotations
 from os import path
 from typing import TYPE_CHECKING, Any
 
-from docutils import nodes
-
 from sphinx.builders.html import StandaloneHTMLBuilder
 from sphinx.environment.adapters.toctree import global_toctree_for_doc
 from sphinx.locale import __
@@ -16,7 +14,7 @@ from sphinx.util.display import progress_message
 from sphinx.util.nodes import inline_all_toctrees
 
 if TYPE_CHECKING:
-    from docutils.nodes import Node
+    from docutils import nodes
 
     from sphinx.application import Sphinx
     from sphinx.util.typing import ExtensionMetadata
@@ -39,8 +37,10 @@ class SingleFileHTMLBuilder(StandaloneHTMLBuilder):
         return 'all documents'
 
     def get_target_uri(self, docname: str, typ: str | None = None) -> str:
-        if docname in self.env.all_docs:
-            # all references are on the same page...
+        # all references are on the same page...
+        if docname.startswith('#'):
+            return docname
+        elif docname in self.env.all_docs:
             return '#document-' + docname
         else:
             # chances are this is a html_additional_page
@@ -49,20 +49,6 @@ class SingleFileHTMLBuilder(StandaloneHTMLBuilder):
     def get_relative_uri(self, from_: str, to: str, typ: str | None = None) -> str:
         # ignore source
         return self.get_target_uri(to, typ)
-
-    def fix_refuris(self, tree: Node) -> None:
-        # fix refuris with double anchor
-        for refnode in tree.findall(nodes.reference):
-            if 'refuri' not in refnode:
-                continue
-            refuri = refnode['refuri']
-            hashindex = refuri.find('#')
-            if hashindex < 0:
-                continue
-            hashindex = refuri.find('#', hashindex + 1)
-            if hashindex >= 0:
-                # all references are on the same page...
-                refnode['refuri'] = refuri[hashindex:]
 
     def _get_local_toctree(self, docname: str, collapse: bool = True, **kwargs: Any) -> str:
         if isinstance(includehidden := kwargs.get('includehidden'), str):
@@ -73,8 +59,6 @@ class SingleFileHTMLBuilder(StandaloneHTMLBuilder):
         if kwargs.get('maxdepth') == '':
             kwargs.pop('maxdepth')
         toctree = global_toctree_for_doc(self.env, docname, self, collapse=collapse, **kwargs)
-        if toctree is not None:
-            self.fix_refuris(toctree)
         return self.render_partial(toctree)['fragment']
 
     def assemble_doctree(self) -> nodes.document:
@@ -83,7 +67,6 @@ class SingleFileHTMLBuilder(StandaloneHTMLBuilder):
         tree = inline_all_toctrees(self, set(), master, tree, darkgreen, [master])
         tree['docname'] = master
         self.env.resolve_references(tree, master, self)
-        self.fix_refuris(tree)
         return tree
 
     def assemble_toc_secnumbers(self) -> dict[str, dict[str, tuple[int, ...]]]:
@@ -130,7 +113,6 @@ class SingleFileHTMLBuilder(StandaloneHTMLBuilder):
         toctree = global_toctree_for_doc(self.env, self.config.root_doc, self, collapse=False)
         # if there is no toctree, toc is None
         if toctree:
-            self.fix_refuris(toctree)
             toc = self.render_partial(toctree)['fragment']
             display_toc = True
         else:
