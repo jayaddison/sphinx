@@ -328,12 +328,45 @@ const Search = {
   /**
    * execute search (requires search index to be loaded)
    */
-  _performSearch: (query, searchTerms, excludedTerms, highlightTerms, objectTerms) => {
+  _performSearch: (query, searchTerms, excludedTerms, highlightTerms, objectTerms, exactSearchPhrases) => {
     const filenames = Search._index.filenames;
     const docNames = Search._index.docnames;
     const titles = Search._index.titles;
     const allTitles = Search._index.alltitles;
     const indexEntries = Search._index.indexentries;
+
+    // Validate phrase queries: return empty results when adjacent phrase terms are missing from the index.
+    if (exactSearchPhrases) {
+      const terms = Search._index.terms;
+      const termsNgrams = Search._index.termsngrams;
+      const termOffsets = Object.keys(terms);
+      const ngramTerms = function (ngram) {
+        let [node, path] = [termsNgrams, ""];
+        for (const step of ngram) {
+          if ((path += step) in node) [node, path] = [node[path], ""];
+        }
+        if (path || !node) return [];
+        if (node.length === undefined) node = [node];
+        return node;
+      };
+
+      for (let phraseQuery of exactSearchPhrases) {
+        let previousTerms = null;
+        const phraseTerms = splitQuery(phraseQuery.trim());
+        for (let phraseTerm of phraseTerms) {
+          let candidateTerms = ngramTerms(phraseTerm.substring(0, 3));
+          for (let end = phraseTerm.length; candidateTerms.size && end > 3; end -= 2) {
+            const subsequentTerms = new Set(ngramTerms(phraseTerm.substring(end - 3, end)));
+            candidateTerms = candidateTerms.filter(term => subsequentTerms.has(term))
+          }
+          if (!previousTerms || candidateTerms.some(term => previousTerms.has(term))) {
+            previousTerms = new Set(candidateTerms);
+            continue;
+          }
+          return [];
+        }
+      }
+    }
 
     // Collect multiple result groups to be sorted separately and then ordered.
     // Each is an array of [docname, title, anchor, descr, score, filename].
@@ -422,7 +455,7 @@ const Search = {
 
   query: (query) => {
     const [searchQuery, searchTerms, excludedTerms, highlightTerms, objectTerms, exactSearchPhrases] = Search._parseQuery(query);
-    const results = Search._performSearch(searchQuery, searchTerms, excludedTerms, highlightTerms, objectTerms);
+    const results = Search._performSearch(searchQuery, searchTerms, excludedTerms, highlightTerms, objectTerms, exactSearchPhrases);
 
     // for debugging
     //Search.lastresults = results.slice();  // a copy

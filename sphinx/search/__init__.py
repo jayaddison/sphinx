@@ -264,6 +264,8 @@ class IndexBuilder:
         self._filenames: dict[str, str] = env._search_index_filenames
         # stemmed words -> set(docname)
         self._mapping: dict[str, set[str]] = env._search_index_mapping
+        # stemmed words -> set(previous stemmed words)
+        self._mapping_prevs: dict[str, set[str]] = env._search_index_mapping_prevs
         # stemmed words in titles -> set(docname)
         self._title_mapping: dict[str, set[str]] = env._search_index_title_mapping
         # docname -> all titles in document
@@ -393,12 +395,15 @@ class IndexBuilder:
                     rv[k] = sorted(fn2index[fn] for fn in v if fn in fn2index)
         return rvs
 
-    @staticmethod
-    def _terms_ngrams(terms: dict[str, Any]) -> dict[str, list[str]]:
+    def _terms_ngrams(self, terms: dict[str, Any]) -> dict[str, list[str]]:
         """Extract unique ngrams (currently, trigrams) from the input search terms."""
         ngrams: dict[str, list[str]] = defaultdict(list)
         for term in terms:
             if len(term) >= 3:
+                # Associate the prefix of this ngram with all previous adjacent suffixes
+                for prev_term in self._mapping_prevs.get(term, set()):
+                    if prev_term in terms and len(prev_term) >= 3:
+                        ngrams[term[0:0 + 3]].append(prev_term)
                 for i in range(len(term) - 2):
                     ngrams[term[i:i + 3]].append(term)
         return {ngram: sorted(set(terms)) for ngram, terms in ngrams.items()}
@@ -523,15 +528,22 @@ class IndexBuilder:
             elif _filter(word):
                 self._title_mapping.setdefault(word, set()).add(docname)
 
+        prev_word = None
         for word in word_store.words:
             # add stemmed and unstemmed as the stemmer must not remove words
             # from search index.
             stemmed_word = stem(word)
             if not _filter(stemmed_word) and _filter(word):
                 stemmed_word = word
+            if prev_word:
+                self._mapping_prevs.setdefault(stemmed_word, set()).add(prev_word)
             already_indexed = docname in self._title_mapping.get(stemmed_word, ())
-            if _filter(stemmed_word) and not already_indexed:
-                self._mapping.setdefault(stemmed_word, set()).add(docname)
+            if _filter(stemmed_word):
+                if not already_indexed:
+                    self._mapping.setdefault(stemmed_word, set()).add(docname)
+                prev_word = stemmed_word
+            else:
+                prev_word = None
 
         # find explicit entries within index directives
         _index_entries: set[tuple[str, str, str]] = set()
