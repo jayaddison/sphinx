@@ -227,6 +227,13 @@ describe('Basic html theme search', function() {
       expect(Search.performTermsSearch(searchterms, excluded, exactPhraseQueries)).toEqual([]);
     });
 
+    it('should pre-filter unknown terms in phrase queries', function() {
+      eval(loadFixture("multiterm/searchindex.js"));
+
+      [_searchQuery, searchterms, excluded, _highlightTerms, _objectTerms, exactPhraseQueries] = Search._parseQuery('"match nonexistentterm document"');
+      expect(Search.performTermsSearch(searchterms, excluded)).toEqual([]);
+    });
+
   });
 
 });
