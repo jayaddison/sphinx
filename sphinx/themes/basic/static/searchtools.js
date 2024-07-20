@@ -335,39 +335,6 @@ const Search = {
     const allTitles = Search._index.alltitles;
     const indexEntries = Search._index.indexentries;
 
-    // Validate phrase queries: return empty results when adjacent phrase terms are missing from the index.
-    if (exactSearchPhrases) {
-      const terms = Search._index.terms;
-      const termsNgrams = Search._index.termsngrams;
-      const termOffsets = Object.keys(terms);
-      const ngramTerms = function (ngram) {
-        let [node, path] = [termsNgrams, ""];
-        for (const step of ngram) {
-          if ((path += step) in node) [node, path] = [node[path], ""];
-        }
-        if (path || !node) return [];
-        if (node.length === undefined) node = [node];
-        return node;
-      };
-
-      for (let phraseQuery of exactSearchPhrases) {
-        let previousTerms = null;
-        const phraseTerms = splitQuery(phraseQuery.trim());
-        for (let phraseTerm of phraseTerms) {
-          let candidateTerms = ngramTerms(phraseTerm.substring(0, 3));
-          for (let end = phraseTerm.length; candidateTerms.size && end > 3; end -= 2) {
-            const subsequentTerms = new Set(ngramTerms(phraseTerm.substring(end - 3, end)));
-            candidateTerms = candidateTerms.filter(term => subsequentTerms.has(term))
-          }
-          if (!previousTerms || candidateTerms.some(term => previousTerms.has(term))) {
-            previousTerms = new Set(candidateTerms);
-            continue;
-          }
-          return [];
-        }
-      }
-    }
-
     // Collect multiple result groups to be sorted separately and then ordered.
     // Each is an array of [docname, title, anchor, descr, score, filename].
     const normalResults = [];
@@ -421,7 +388,7 @@ const Search = {
     );
 
     // lookup as search terms in fulltext
-    normalResults.push(...Search.performTermsSearch(searchTerms, excludedTerms));
+    normalResults.push(...Search.performTermsSearch(searchTerms, excludedTerms, exactSearchPhrases));
 
     // let the scorer override scores with a custom scoring function
     if (Scorer.score) {
@@ -539,7 +506,7 @@ const Search = {
   /**
    * search for full-text terms in the index
    */
-  performTermsSearch: (searchTerms, excludedTerms) => {
+  performTermsSearch: (searchTerms, excludedTerms, exactSearchPhrases) => {
     // prepare search
     const terms = Search._index.terms;
     const termsNgrams = Search._index.termsngrams;
@@ -550,6 +517,37 @@ const Search = {
 
     const scoreMap = new Map();
     const fileMap = new Map();
+
+    // Validate phrase queries: return empty results when adjacent phrase terms are missing from the index.
+    if (exactSearchPhrases) {
+      const termsNgrams = Search._index.termsngrams;
+      const ngramTerms = function (ngram) {
+        let [node, path] = [termsNgrams, ""];
+        for (const step of ngram) {
+          if ((path += step) in node) [node, path] = [node[path], ""];
+        }
+        if (path || !node) return [];
+        if (node.length === undefined) node = [node];
+        return node;
+      };
+
+      for (let phraseQuery of exactSearchPhrases) {
+        let previousTerms = null;
+        const phraseTerms = splitQuery(phraseQuery.trim());
+        for (let phraseTerm of phraseTerms) {
+          let candidateTerms = ngramTerms(phraseTerm.substring(0, 3));
+          for (let end = phraseTerm.length; candidateTerms.size && end > 3; end -= 2) {
+            const subsequentTerms = new Set(ngramTerms(phraseTerm.substring(end - 3, end)));
+            candidateTerms = candidateTerms.filter(term => subsequentTerms.has(term))
+          }
+          if (!previousTerms || candidateTerms.some(term => previousTerms.has(term))) {
+            previousTerms = new Set(candidateTerms);
+            continue;
+          }
+          return [];
+        }
+      }
+    }
 
     // perform the search on the required terms
     searchTerms.forEach((word) => {

@@ -542,8 +542,6 @@ class IndexBuilder:
                 if not already_indexed:
                     self._mapping.setdefault(stemmed_word, set()).add(docname)
                 prev_word = stemmed_word
-            else:
-                prev_word = None
 
         # find explicit entries within index directives
         _index_entries: set[tuple[str, str, str]] = set()

@@ -10,7 +10,7 @@
  *
  */
 
-var stopwords = [];
+var stopwords = ['this'];
 
 
 /* Non-minified version is copied as a separate JS file, if available */

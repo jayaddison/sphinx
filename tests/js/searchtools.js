@@ -57,6 +57,20 @@ describe('Basic html theme search', function() {
       expect(Search.performTermsSearch(searchterms, excluded)).toEqual(hits);
     });
 
+    it('should be able to search for phrases', function() {
+      eval(loadFixture("multiterm/searchindex.js"));
+
+      [_searchQuery, searchterms, excluded, _highlightTerms, _objectTerms, exactPhraseQueries] = Search._parseQuery('"match this document"');
+      hits = [[
+        'index',
+        'Main Page',
+        '',
+        null,
+        5,
+        'index.rst']];
+      expect(Search.performTermsSearch(searchterms, excluded)).toEqual(hits);
+    });
+
     it('should partially-match "sphinx" when in title index', function() {
       eval(loadFixture("partial/searchindex.js"));
 
@@ -204,6 +218,13 @@ describe('Basic html theme search', function() {
       [_searchQuery, searchterms, excluded, ..._remainingItems] = Search._parseQuery('HTMZ');
 
       expect(Search.performTermsSearch(searchterms, excluded)).toEqual([]);
+    });
+
+    it('should handle phrase queries with no matches', function() {
+      eval(loadFixture("multiterm/searchindex.js"));
+
+      [_searchQuery, searchterms, excluded, _highlightTerms, _objectTerms, exactPhraseQueries] = Search._parseQuery('"utter complete drivel"');
+      expect(Search.performTermsSearch(searchterms, excluded, exactPhraseQueries)).toEqual([]);
     });
 
   });
