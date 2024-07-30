@@ -7,7 +7,7 @@ from tests.test_builders.xpath_util import _intradocument_hyperlink_check, check
 
 
 @pytest.mark.sphinx(testroot='toctree-glob')
-def test_relations(app, status, warning):
+def test_relations(app):
     app.build(force_all=True)
     assert app.builder.relations['index'] == [None, None, 'foo']
     assert app.builder.relations['foo'] == ['index', 'index', 'bar/index']
@@ -24,7 +24,7 @@ def test_relations(app, status, warning):
 
 
 @pytest.mark.sphinx('singlehtml', testroot='toctree-empty')
-def test_singlehtml_toctree(app, status, warning):
+def test_singlehtml_toctree(app):
     app.build(force_all=True)
     try:
         app.builder._get_local_toctree('index')
@@ -33,7 +33,7 @@ def test_singlehtml_toctree(app, status, warning):
 
 
 @pytest.mark.sphinx(testroot='toctree', srcdir="numbered-toctree")
-def test_numbered_toctree(app, status, warning):
+def test_numbered_toctree(app):
     # give argument to :numbered: option
     index = (app.srcdir / 'index.rst').read_text(encoding='utf8')
     index = re.sub(':numbered:.*', ':numbered: 1', index)
@@ -43,8 +43,8 @@ def test_numbered_toctree(app, status, warning):
 
 @pytest.mark.parametrize("expect", [
     # internal references should be same-document; external should not
-    ("//a[@class='reference internal']", _intradocument_hyperlink_check),
-    ("//a[@class='reference external']", r'https?://'),
+    (".//a[@class='reference internal']", _intradocument_hyperlink_check),
+    (".//a[@class='reference external']", r'https?://'),
 ])
 @pytest.mark.sphinx('singlehtml', testroot='toctree')
 def test_singlehtml_hyperlinks(app, cached_etree_parse, expect):
