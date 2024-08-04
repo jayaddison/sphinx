@@ -2,7 +2,8 @@
 
 import pytest
 
-from tests.test_builders.xpath_util import _intradocument_hyperlink_check, check_xpath
+from tests.test_builders.xpath_html_util import _intradocument_hyperlink_check
+from tests.test_builders.xpath_util import check_xpath
 
 
 @pytest.mark.parametrize(("fname", "path", "check", "be_found"), [
@@ -89,7 +90,7 @@ def test_tocdepth(app, cached_etree_parse, fname, path, check, be_found):
     (".//h4//span[@class='section-number']", '2.1.1. ', True),
 
     # in the absence of external hyperlinks, all content hrefs should be same-document
-    ("//div[@class='document']//a", _intradocument_hyperlink_check),
+    (".//div[@class='document']//a", _intradocument_hyperlink_check),
 ])
 @pytest.mark.sphinx('singlehtml', testroot='tocdepth')
 @pytest.mark.test_params(shared_result='test_build_html_tocdepth')
