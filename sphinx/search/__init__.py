@@ -160,8 +160,8 @@ class _JavaScriptIndex:
     on the documentation search object to register the index.
     """
 
-    PREFIX = 'Search.setIndex('
-    SUFFIX = ')'
+    PREFIX = 'Search.setIndex(Object.freeze('
+    SUFFIX = '))'
 
     def dumps(self, data: Any) -> str:
         data_json = json.dumps(data, separators=(',', ':'), sort_keys=True)
