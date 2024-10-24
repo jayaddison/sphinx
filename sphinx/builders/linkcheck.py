@@ -180,7 +180,6 @@ class CheckExternalLinksBuilder(DummyBuilder):
                     }[result.code]
                 except KeyError:
                     text, color = ('with unknown code', purple)
-                linkstat['text'] = text
                 redirection = f'{text} to {result.message}'
                 if self.config.linkcheck_allowed_redirects:
                     msg = f'redirect  {result.uri} - {redirection}'
