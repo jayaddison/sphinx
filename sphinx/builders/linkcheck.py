@@ -191,7 +191,7 @@ class CheckExternalLinksBuilder(DummyBuilder):
                     result.docname,
                     filename,
                     result.lineno,
-                    reason,
+                    reason,  # todo: continue to include the URI?  probably often useful..
                 )
             case _Status.UNKNOWN:
                 msg = 'Unknown status.'
