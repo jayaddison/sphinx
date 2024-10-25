@@ -711,10 +711,7 @@ def test_follows_redirects_on_HEAD(app, capsys):
         app.build()
     stdout, stderr = capsys.readouterr()
     content = (app.outdir / 'output.txt').read_text(encoding='utf8')
-    assert content == (
-        'index.rst:1: [redirected with Found] '
-        f'http://{address}/ to http://{address}/?redirected=1\n'
-    )
+    assert content == 'index.rst:1: [redirected] found\n'
     assert stderr == textwrap.dedent(
         """\
         127.0.0.1 - - [] "HEAD / HTTP/1.1" 302 -
@@ -734,10 +731,7 @@ def test_follows_redirects_on_GET(app, capsys):
         app.build()
     stdout, stderr = capsys.readouterr()
     content = (app.outdir / 'output.txt').read_text(encoding='utf8')
-    assert content == (
-        'index.rst:1: [redirected with Found] '
-        f'http://{address}/ to http://{address}/?redirected=1\n'
-    )
+    assert content == 'index.rst:1: [redirected] found\n'
     assert stderr == textwrap.dedent(
         """\
         127.0.0.1 - - [] "HEAD / HTTP/1.1" 405 -
@@ -770,10 +764,8 @@ def test_linkcheck_allowed_redirects(app: SphinxTestApp) -> None:
         'info': f'http://{address}/?redirected=1',
     }
 
-    assert (
-        f'index.rst:3: WARNING: redirect  http://{address}/path2 - with Found to '
-        f'http://{address}/?redirected=1\n'
-    ) in strip_colors(app.warning.getvalue())
+    content = strip_colors(app.warning.getvalue())
+    assert f'index.rst:3: WARNING: redirected with reason: found' in content
     assert len(app.warning.getvalue().splitlines()) == 1
 
 

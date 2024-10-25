@@ -171,28 +171,27 @@ class CheckExternalLinksBuilder(DummyBuilder):
                 self.broken_hyperlinks += 1
             case _Status.REDIRECTED:
                 try:
-                    text, color = {
+                    reason, color = {
                         301: ('permanently', purple),
-                        302: ('with Found', purple),
-                        303: ('with See Other', purple),
+                        302: ('found', purple),
+                        303: ('see other', purple),
                         307: ('temporarily', turquoise),
                         308: ('permanently', purple),
                     }[result.code]
                 except KeyError:
-                    text, color = ('with unknown code', purple)
-                redirection = f'{text} to {result.message}'
+                    reason, color = ('unknown', purple)
                 if self.config.linkcheck_allowed_redirects:
-                    msg = f'redirect  {result.uri} - {redirection}'
+                    msg = f'redirected with reason: {reason}'
                     logger.warning(msg, location=(result.docname, result.lineno))
                 else:
-                    msg = color('redirect  ') + result.uri + color(' - ' + redirection)
+                    msg = color('redirected with reason: {reason}')
                     logger.info(msg)
                 self.write_entry(
-                    f'redirected {text}',
+                    _Status.REDIRECTED,
                     result.docname,
                     filename,
                     result.lineno,
-                    f'{result.uri} to {result.message}',
+                    reason,
                 )
             case _Status.UNKNOWN:
                 msg = 'Unknown status.'
