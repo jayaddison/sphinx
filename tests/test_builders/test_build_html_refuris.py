@@ -8,6 +8,8 @@ import pytest
 
 from tests.test_builders.xpath_util import check_xpath
 
+from sphinx.deprecation import RemovedInSphinx10Warning
+
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
     from pathlib import Path
@@ -33,7 +35,8 @@ def test_singlehtml_refuris(
     app: SphinxTestApp,
     cached_etree_parse: Callable[[Path], ElementTree],
 ) -> None:
-    app.build()
+    with pytest.warns(RemovedInSphinx10Warning, match=r'deprecated.'):
+        app.build()
     check_xpath(
         cached_etree_parse(app.outdir / 'index.html'),
         'index.html',
