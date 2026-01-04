@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from tests.test_builders.xpath_util import check_xpath
-
 from sphinx.deprecation import RemovedInSphinx10Warning
+
+from tests.test_builders.xpath_util import check_xpath
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
