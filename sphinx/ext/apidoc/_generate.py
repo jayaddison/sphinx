@@ -42,7 +42,7 @@ def is_initpy(filename: str | Path) -> bool:
     return any(
         basename == '__init__' + suffix
         for suffix in sorted(PY_SUFFIXES, key=len, reverse=True)
-    )
+    )  # ty: ignore[unsupported-operator]
 
 
 def module_join(*modnames: str | None) -> str:
