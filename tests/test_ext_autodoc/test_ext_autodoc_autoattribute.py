@@ -139,7 +139,7 @@ def test_autoattribute_GenericAlias() -> None:
         '',
         '   A list of int',
         '',
-        '   alias of :py:class:`~typing.List`\\ [:py:class:`int`]',
+        '   alias of :py:class:`list`\\ [:py:class:`int`]',
         '',
     ]
 

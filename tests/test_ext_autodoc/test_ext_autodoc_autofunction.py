@@ -151,7 +151,7 @@ def test_wrapped_function_contextmanager() -> None:
     actual = do_autodoc('function', 'target.wrappedfunction.feeling_good')
     assert actual == [
         '',
-        '.. py:function:: feeling_good(x: int, y: int) -> ~typing.Generator',
+        '.. py:function:: feeling_good(x: int, y: int) -> ~collections.abc.Generator',
         '   :module: target.wrappedfunction',
         '',
         "   You'll feel better in this context!",

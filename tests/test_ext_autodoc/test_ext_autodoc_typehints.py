@@ -821,7 +821,7 @@ def test_autodoc_typehints_format_fully_qualified_for_generic_alias() -> None:
         '',
         '   A list of Class',
         '',
-        '   alias of :py:class:`~typing.List`\\ [:py:class:`target.genericalias.Class`]',
+        '   alias of :py:class:`list`\\ [:py:class:`target.genericalias.Class`]',
         '',
     ]
 

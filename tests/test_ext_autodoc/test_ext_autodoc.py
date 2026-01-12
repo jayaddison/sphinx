@@ -2182,7 +2182,7 @@ def test_autodoc_GenericAlias() -> None:
         '',
         '      A list of int',
         '',
-        '      alias of :py:class:`~typing.List`\\ [:py:class:`int`]',
+        '      alias of :py:class:`list`\\ [:py:class:`int`]',
         '',
         '',
         '.. py:data:: L',
@@ -2190,7 +2190,7 @@ def test_autodoc_GenericAlias() -> None:
         '',
         '   A list of Class',
         '',
-        '   alias of :py:class:`~typing.List`\\ '
+        '   alias of :py:class:`list`\\ '
         '[:py:class:`~target.genericalias.Class`]',
         '',
         '',
@@ -2199,7 +2199,7 @@ def test_autodoc_GenericAlias() -> None:
         '',
         '   A list of int',
         '',
-        '   alias of :py:class:`~typing.List`\\ [:py:class:`int`]',
+        '   alias of :py:class:`list`\\ [:py:class:`int`]',
         '',
     ]
 

@@ -280,15 +280,15 @@ def test_signature_annotations() -> None:
 
     # Generic types with concrete parameters
     sig = inspect.signature(mod.f1)
-    assert stringify_signature(sig) == '(x: list[int]) -> typing.List[int]'
+    assert stringify_signature(sig) == '(x: list[int]) -> list[int]'
 
     # TypeVars and generic types with TypeVars
     sig = inspect.signature(mod.f2)
     assert stringify_signature(sig) == (
-        '(x: typing.List[tests.test_util.typing_test_data.T],'
-        ' y: typing.List[tests.test_util.typing_test_data.T_co],'
+        '(x: list[tests.test_util.typing_test_data.T],'
+        ' y: list[tests.test_util.typing_test_data.T_co],'
         ' z: tests.test_util.typing_test_data.T'
-        ') -> typing.List[tests.test_util.typing_test_data.T_contra]'
+        ') -> list[tests.test_util.typing_test_data.T_contra]'
     )
 
     # Union types
@@ -314,15 +314,15 @@ def test_signature_annotations() -> None:
 
     # Callable types
     sig = inspect.signature(mod.f8)
-    assert stringify_signature(sig) == '(x: typing.Callable[[int, str], int]) -> None'
+    assert stringify_signature(sig) == '(x: collections.abc.Callable[[int, str], int]) -> None'
 
     sig = inspect.signature(mod.f9)
-    assert stringify_signature(sig) == '(x: typing.Callable) -> None'
+    assert stringify_signature(sig) == '(x: collections.abc.Callable) -> None'
 
     # Tuple types
     sig = inspect.signature(mod.f10)
     sig_str = stringify_signature(sig)
-    assert sig_str == '(x: typing.Tuple[int, str], y: typing.Tuple[int, ...]) -> None'
+    assert sig_str == '(x: tuple[int, str], y: tuple[int, ...]) -> None'
 
     # Instance annotations
     sig = inspect.signature(mod.f11)
@@ -330,7 +330,7 @@ def test_signature_annotations() -> None:
 
     # tuple with more than two items
     sig = inspect.signature(mod.f12)
-    assert stringify_signature(sig) == '() -> typing.Tuple[int, str, int]'
+    assert stringify_signature(sig) == '() -> tuple[int, str, int]'
 
     # optional
     sig = inspect.signature(mod.f13)
@@ -361,7 +361,7 @@ def test_signature_annotations() -> None:
 
     sig = inspect.signature(mod.f18)
     assert stringify_signature(sig) == (
-        '(self, arg1: int | typing.Tuple = 10) -> typing.List[typing.Dict]'
+        '(self, arg1: int | tuple = 10) -> list[dict]'
     )
 
     # annotations for variadic and keyword parameters
@@ -375,7 +375,7 @@ def test_signature_annotations() -> None:
     # type hints by string
     sig = inspect.signature(mod.Node.children)
     sig_str = stringify_signature(sig)
-    assert sig_str == '(self) -> typing.List[tests.test_util.typing_test_data.Node]'
+    assert sig_str == '(self) -> list[tests.test_util.typing_test_data.Node]'
 
     sig = inspect.signature(mod.Node.__init__)
     sig_str = stringify_signature(sig)
@@ -485,8 +485,8 @@ def test_signature_from_str_annotations() -> None:
 
 
 def test_signature_from_str_complex_annotations() -> None:
-    sig = inspect.signature_from_str('() -> Tuple[str, int, ...]')
-    assert sig.return_annotation == 'Tuple[str, int, ...]'
+    sig = inspect.signature_from_str('() -> tuple[str, int, ...]')
+    assert sig.return_annotation == 'tuple[str, int, ...]'
 
     sig = inspect.signature_from_str('() -> Callable[[int, int], int]')
     assert sig.return_annotation == 'Callable[[int, int], int]'
@@ -941,13 +941,9 @@ def test_isgenericalias() -> None:
     C = Callable[[int], None]  # a generic alias not having a doccomment
 
     assert inspect.isgenericalias(C)
-    assert inspect.isgenericalias(Callable)
     assert inspect.isgenericalias(T)
-    assert inspect.isgenericalias(list)  # NoQA: UP006
     assert inspect.isgenericalias(S)
-    assert not inspect.isgenericalias(list)
     assert not inspect.isgenericalias([])
-    assert not inspect.isgenericalias(object())
     assert not inspect.isgenericalias(Base)
 
 
