@@ -232,9 +232,7 @@ def test_restify_type_hints_containers():
         ':py:class:`dict`\\ [:py:class:`str`, :py:class:`float`]'
     )
     assert restify(tuple[str, str, str]) == (
-        ':py:class:`tuple`\\ '
-        '[:py:class:`str`, :py:class:`str`, '
-        ':py:class:`str`]'
+        ':py:class:`tuple`\\ [:py:class:`str`, :py:class:`str`, :py:class:`str`]'
     )
     ann_rst = restify(tuple[str, ...])
     assert ann_rst == ':py:class:`tuple`\\ [:py:class:`str`, ...]'
@@ -242,9 +240,7 @@ def test_restify_type_hints_containers():
     assert restify(tuple[()]) == ':py:class:`tuple`\\ [()]'
 
     assert restify(list[dict[str, tuple]]) == (
-        ':py:class:`list`\\ '
-        '[:py:class:`dict`\\ '
-        '[:py:class:`str`, :py:class:`tuple`]]'
+        ':py:class:`list`\\ [:py:class:`dict`\\ [:py:class:`str`, :py:class:`tuple`]]'
     )
     assert restify(MyList[tuple[int, int]]) == (
         ':py:class:`tests.test_util.test_util_typing.MyList`\\ '
@@ -595,7 +591,9 @@ def test_stringify_type_hints_containers():
     assert ann_str == 'tuple[str, ...]'
     assert stringify_annotation(tuple[str, ...], 'smart') == 'tuple[str, ...]'
 
-    assert stringify_annotation(tuple[()], 'fully-qualified-except-typing') == 'tuple[()]'
+    assert (
+        stringify_annotation(tuple[()], 'fully-qualified-except-typing') == 'tuple[()]'
+    )
     assert stringify_annotation(tuple[()], 'fully-qualified') == 'tuple[()]'
     assert stringify_annotation(tuple[()], 'smart') == 'tuple[()]'
 
@@ -613,13 +611,9 @@ def test_stringify_type_hints_containers():
     )
     assert ann_str == 'tests.test_util.test_util_typing.MyList[tuple[int, int]]'
     ann_str = stringify_annotation(MyList[tuple[int, int]], 'fully-qualified')
-    assert ann_str == (
-        'tests.test_util.test_util_typing.MyList[tuple[int, int]]'
-    )
+    assert ann_str == ('tests.test_util.test_util_typing.MyList[tuple[int, int]]')
     ann_str = stringify_annotation(MyList[tuple[int, int]], 'smart')
-    assert ann_str == (
-        '~tests.test_util.test_util_typing.MyList[tuple[int, int]]'
-    )
+    assert ann_str == ('~tests.test_util.test_util_typing.MyList[tuple[int, int]]')
 
     ann_str = stringify_annotation(
         t.Generator[None, None, None], 'fully-qualified-except-typing'

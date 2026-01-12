@@ -314,7 +314,10 @@ def test_signature_annotations() -> None:
 
     # Callable types
     sig = inspect.signature(mod.f8)
-    assert stringify_signature(sig) == '(x: collections.abc.Callable[[int, str], int]) -> None'
+    assert (
+        stringify_signature(sig)
+        == '(x: collections.abc.Callable[[int, str], int]) -> None'
+    )
 
     sig = inspect.signature(mod.f9)
     assert stringify_signature(sig) == '(x: collections.abc.Callable) -> None'
@@ -360,9 +363,7 @@ def test_signature_annotations() -> None:
     assert stringify_signature(sig) == '(*, arg3, arg4)'
 
     sig = inspect.signature(mod.f18)
-    assert stringify_signature(sig) == (
-        '(self, arg1: int | tuple = 10) -> list[dict]'
-    )
+    assert stringify_signature(sig) == ('(self, arg1: int | tuple = 10) -> list[dict]')
 
     # annotations for variadic and keyword parameters
     sig = inspect.signature(mod.f19)

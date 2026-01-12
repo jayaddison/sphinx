@@ -2190,8 +2190,7 @@ def test_autodoc_GenericAlias() -> None:
         '',
         '   A list of Class',
         '',
-        '   alias of :py:class:`list`\\ '
-        '[:py:class:`~target.genericalias.Class`]',
+        '   alias of :py:class:`list`\\ [:py:class:`~target.genericalias.Class`]',
         '',
         '',
         '.. py:data:: T',
