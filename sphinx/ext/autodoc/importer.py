@@ -98,7 +98,7 @@ def import_object(
             exc = exc_on_importing
 
         if objpath:
-            errmsg = 'autodoc: failed to import %s %r from module %r' % (
+            errmsg = 'autodoc: failed to import {} {!r} from module {!r}'.format(
                 objtype,
                 '.'.join(objpath),
                 modname,

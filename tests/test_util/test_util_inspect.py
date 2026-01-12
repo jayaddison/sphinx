@@ -8,7 +8,8 @@ import enum
 import functools
 import types
 from inspect import Parameter
-from typing import Callable, List, Optional, Union  # NoQA: UP035
+from typing import List, Optional, Union  # NoQA: UP035
+from collections.abc import Callable
 
 import pytest
 
@@ -934,7 +935,7 @@ def test_isproperty() -> None:
 
 def test_isgenericalias() -> None:
     #: A list of int
-    T = List[int]  # NoQA: UP006
+    T = list[int]  # NoQA: UP006
     S = list[Union[str, None]]  # NoQA: UP007
 
     C = Callable[[int], None]  # a generic alias not having a doccomment
@@ -942,7 +943,7 @@ def test_isgenericalias() -> None:
     assert inspect.isgenericalias(C)
     assert inspect.isgenericalias(Callable)
     assert inspect.isgenericalias(T)
-    assert inspect.isgenericalias(List)  # NoQA: UP006
+    assert inspect.isgenericalias(list)  # NoQA: UP006
     assert inspect.isgenericalias(S)
     assert not inspect.isgenericalias(list)
     assert not inspect.isgenericalias([])

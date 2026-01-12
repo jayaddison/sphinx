@@ -4,7 +4,7 @@ import typing
 from typing import final
 
 import typing_extensions
-from typing_extensions import final as final_ext  # noqa: UP035
+from typing import final as final_ext  # noqa: UP035
 
 
 @typing.final

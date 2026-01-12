@@ -252,7 +252,7 @@ class TexinfoTranslator(SphinxTranslator):
                 '(%s)' % elements['filename'],
                 self.escape_arg(self.settings.texinfo_dir_description),
             )
-            elements['direntry'] = '@dircategory %s\n@direntry\n%s@end direntry\n' % (
+            elements['direntry'] = '@dircategory {}\n@direntry\n{}@end direntry\n'.format(
                 self.escape_id(self.settings.texinfo_dir_category),
                 entry,
             )

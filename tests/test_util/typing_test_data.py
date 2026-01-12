@@ -1,13 +1,14 @@
 from inspect import Signature
 from numbers import Integral
-from typing import Any, Callable, Dict, List, Literal, Optional, Tuple, TypeVar, Union
+from typing import Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
+from collections.abc import Callable
 
 
 def f0(x: int, y: Integral) -> None:
     pass
 
 
-def f1(x: list[int]) -> List[int]:
+def f1(x: list[int]) -> list[int]:
     pass
 
 
@@ -16,11 +17,11 @@ T_co = TypeVar('T_co', covariant=True)
 T_contra = TypeVar('T_contra', contravariant=True)
 
 
-def f2(x: List[T], y: List[T_co], z: T) -> List[T_contra]:  # pyright: ignore[reportInvalidTypeVarUse]
+def f2(x: list[T], y: list[T_co], z: T) -> list[T_contra]:  # pyright: ignore[reportInvalidTypeVarUse]
     pass
 
 
-def f3(x: Union[str, Integral]) -> None:
+def f3(x: str | Integral) -> None:
     pass
 
 
@@ -52,7 +53,7 @@ def f9(x: Callable) -> None:
     pass
 
 
-def f10(x: Tuple[int, str], y: Tuple[int, ...]) -> None:
+def f10(x: tuple[int, str], y: tuple[int, ...]) -> None:
     pass
 
 
@@ -65,11 +66,11 @@ def f11(x: CustomAnnotation(), y: 123) -> None:
     pass
 
 
-def f12() -> Tuple[int, str, int]:
+def f12() -> tuple[int, str, int]:
     pass
 
 
-def f13() -> Optional[str]:
+def f13() -> str | None:
     pass
 
 
@@ -89,7 +90,7 @@ def f17(*, arg3, arg4):
     pass
 
 
-def f18(self, arg1: Union[int, Tuple] = 10) -> List[Dict]:
+def f18(self, arg1: int | tuple = 10) -> list[dict]:
     pass
 
 
@@ -97,7 +98,7 @@ def f19(*args: int, **kwargs: str):
     pass
 
 
-def f20() -> Optional[Union[int, str]]:
+def f20() -> int | str | None:
     pass
 
 
@@ -121,7 +122,7 @@ def f25(a, b, /):
     pass
 
 
-def f26(x: Literal[1, 2, 3] = 1, y: Union[Literal['a'], Literal['b']] = 'a') -> None:
+def f26(x: Literal[1, 2, 3] = 1, y: Literal['a'] | Literal['b'] = 'a') -> None:
     pass
 
 
@@ -129,5 +130,5 @@ class Node:
     def __init__(self, parent: Optional['Node']) -> None:
         pass
 
-    def children(self) -> List['Node']:
+    def children(self) -> list['Node']:
         pass
