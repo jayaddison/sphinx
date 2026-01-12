@@ -1798,7 +1798,7 @@ class LaTeXTranslator(SphinxTranslator):
     def _visit_named_admonition(self, node: Element) -> None:
         label = admonitionlabels[node.tagname]
         self.body.append(
-            CR + r'\begin{{sphinxadmonition}}{{{}}}{{{}:}}'.format(node.tagname, label)
+            CR + fr'\begin{{sphinxadmonition}}{{{node.tagname}}}{{{label}:}}'
         )
         self.no_latex_floats += 1
 
