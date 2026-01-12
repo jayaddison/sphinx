@@ -30,7 +30,7 @@ class Qux:
         pass
 
 
-class Quux(list[Union[int, float]]):  # NoQA: UP006,UP007
+class Quux(list[Union[int, float]]):  # NoQA: UP007, FURB189
     """A subclass of List[Union[int, float]]"""
 
     pass

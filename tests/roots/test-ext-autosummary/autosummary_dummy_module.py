@@ -42,7 +42,7 @@ class _Baz:
     pass
 
 
-def bar(x: int | str, y: int = 1) -> None:  # NoQA: UP007
+def bar(x: int | str, y: int = 1) -> None:
     pass
 
 

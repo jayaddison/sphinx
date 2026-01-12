@@ -18,5 +18,5 @@ class DocMainLevel(Foo):
     pass
 
 
-class Alice:  # NoQA: UP004
+class Alice:
     pass

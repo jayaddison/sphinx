@@ -1,8 +1,8 @@
 import typing
 from typing import TYPE_CHECKING, overload
+from typing import overload as over_ext
 
 import typing_extensions
-from typing import overload as over_ext  # noqa: UP035
 
 
 @overload

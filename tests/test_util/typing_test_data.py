@@ -1,7 +1,7 @@
+from collections.abc import Callable
 from inspect import Signature
 from numbers import Integral
-from typing import Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
-from collections.abc import Callable
+from typing import Any, Literal, Optional, TypeVar
 
 
 def f0(x: int, y: Integral) -> None:

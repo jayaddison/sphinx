@@ -92,7 +92,7 @@ T = TypeVar('T')
 MyInt = NewType('MyInt', int)
 
 
-class MyList(list[T]):
+class MyList(list[T]):  # NoQA: FURB189
     pass
 
 

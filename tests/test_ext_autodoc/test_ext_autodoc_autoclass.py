@@ -324,7 +324,7 @@ def _autodoc_process_bases(
     assert obj.__module__ == 'target.classes'
     assert obj.__name__ == 'Quux'
     assert vars(options) == {}
-    assert bases == [list[typing.Union[int, float]]]  # NoQA: UP006, UP007
+    assert bases == [list[typing.Union[int, float]]]  # noqa: UP007
 
     bases.pop()
     bases.extend([int, str])

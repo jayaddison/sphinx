@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import typing
 from typing import final
+from typing import final as final_ext
 
 import typing_extensions
-from typing import final as final_ext  # noqa: UP035
 
 
 @typing.final
