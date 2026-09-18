@@ -161,12 +161,14 @@ def attr_check(attr: str, check: str) -> Callable[[Iterable[Element]], Literal[T
         (
             'markup.html',
             ".//a[@class='rfc reference external']/strong[.='RFC 1']/../../a[@href]",
-            attr_check('href', r'https://datatracker.ietf.org/doc/html/rfc1\.html'),
+            # canonical RFC URLs may end either with either a '.html' or '/' suffix
+            attr_check('href', r'https://datatracker.ietf.org/doc/html/rfc1(/|\.html)'),
         ),
         (
             'markup.html',
             ".//a[@class='rfc reference external']/strong[.='Request for Comments #1']/../../a[@href]",
-            attr_check('href', r'https://datatracker.ietf.org/doc/html/rfc1\.html'),
+            # canonical RFC URLs may end either with either a '.html' or '/' suffix
+            attr_check('href', r'https://datatracker.ietf.org/doc/html/rfc1(/|\.html)'),
         ),
         (
             'markup.html',
